@@ -1,0 +1,19 @@
+{
+  "name": "cognitev_task_nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaahayba/cognitevTask_nodeJs.git"
+  },
+  "author": "AlaaHayba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alaahayba/cognitevTask_nodeJs/issues"
+  },
+  "homepage": "https://github.com/alaahayba/cognetevTask_nodeJs#readme"
+}
