@@ -1,5 +1,8 @@
 var mongoose = require("mongoose");
 var phone =require ('phone');
+var lookup = require('country-code-lookup');
+var validate=require("../middleware/validateInput.js")
+// var DateOnly = require('mongoose-dateonly')(mongoose);
 
 // ORM Mapping ...
 var Schema = mongoose.Schema;
@@ -9,13 +12,13 @@ const users = new Schema({
   last_name:String,
   countryCode:String,
   Phone_number:{
-    type: Date,
-    required: true ,
+    type: String,
+    required: true,
     unique: true,
   },
   gender:{type: String, enum:['male', 'female']},
   birthDate:{
-    type: Date,
+    type: String,
     required: true,
      },
 
@@ -40,44 +43,33 @@ UsersModel.model = mongoose.model("users");
 
 //***************************************************************//
 
-var validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
+UsersModel.isValidData=(data,files)=>{
+  let response={errors:{}}
 
-var validatePhone = function(phoneNum,countryCode) {
-  //phone('6123-6123', 'HKG'); // return ['+85261236123', 'HKG']
-    //validate Phone according to country-Code  //phone('6123-6123', ''); // return [], as default country is USA
-    console.log(phoneNum,countryCode);
-    var res=phone(phoneNum,users.countryCode)
-    console.log("ooooooooooooooooooooooooooooooooooooo")
-    console.log(res);
-    return res.length;
-};
+  if(data.first_name=='')
+     response.errors.first_name=[{"error": "blank" }];
 
-var validateDate = function(birthDate) {
-  var re = /\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])/;
-  return re.test(birthDate)
-};
-//*************************************************************************//
+  if(data.last_name=='')
+     response.errors.last_name=[{"error": "blank" }];
 
-UsersModel.isValidData=(data)=>{
+  if(['female','male'].indexOf(data.gender)< 0)
+     response.errors.gender=[{"error": "inclusion" }];
 
-  let response={case:true,error:""}
-  console.log(data)
-  if(!validateEmail(data.email))
-  {
-    response={case:false,error:response.error+"email isn't valid,"}
+  if((errors=validate.validateEmail(data.email))&&errors.length){
+    response.errors.email=errors;
   }
-  if(!validatePhone(data.Phone_number,data.countryCode))
-  {
-    response={case:false,error:response.error+"phone number isn't valid,"}
+  if(data.countryCode && !lookup.byInternet(data.countryCode)){
+    response.errors.countryCode=[ { "error": "inclusion" } ];
   }
-  if(!validateDate(data.birthDate))
-  {
-    response={case:false,error:response.error+"birth date format isn't valid,it  must be yyyy-mm-dd"}
+  if((errors=validate.validatePhone(data.Phone_number,data.countryCode))&&errors.length){
+      response.errors.phone_number=errors;
   }
-    console.log(response)
+  if((errors=validate.validateDate(data.birthDate))&&errors.length){
+    response.errors.birthDate=errors;
+  }
+  if((errors=validate.validateAvatar(files))&&errors.length){
+    response.errors.avatar=errors;
+  }
  return response
 }
 
@@ -87,6 +79,12 @@ UsersModel.register = (newUserAccount, callbackFn)=>{
     user.save((err, doc)=>{
         callbackFn(err, doc);
     });
+}
+
+UsersModel.getUserbyEmail = (email, callbackFn)=>{
+    UsersModel.model.find({email:email},(err,doc)=>{
+        callbackFn(err, doc);
+      });
 }
 
 module.exports = UsersModel;
