@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var phone =require ('phone');
 var lookup = require('country-code-lookup');
 var validate=require("../middleware/validateInput.js")
 // var DateOnly = require('mongoose-dateonly')(mongoose);
@@ -46,11 +45,14 @@ UsersModel.model = mongoose.model("users");
 UsersModel.isValidData=(data,files)=>{
   let response={errors:{}}
 
-  if(data.first_name=='')
+  if(!data.first_name||data.first_name=='')
      response.errors.first_name=[{"error": "blank" }];
 
-  if(data.last_name=='')
+  if(!data.last_name||data.last_name=='')
      response.errors.last_name=[{"error": "blank" }];
+
+  if(!data.password||data.password=='')
+    response.errors.password=[{"error": "blank" }];
 
   if(['female','male'].indexOf(data.gender)< 0)
      response.errors.gender=[{"error": "inclusion" }];
@@ -61,6 +63,9 @@ UsersModel.isValidData=(data,files)=>{
   if(data.countryCode && !lookup.byInternet(data.countryCode)){
     response.errors.countryCode=[ { "error": "inclusion" } ];
   }
+  else if(!data.countryCode){
+      response.errors.countryCode=[ { "error": "blank" } ];
+  }
   if((errors=validate.validatePhone(data.Phone_number,data.countryCode))&&errors.length){
       response.errors.phone_number=errors;
   }
@@ -70,6 +75,7 @@ UsersModel.isValidData=(data,files)=>{
   if((errors=validate.validateAvatar(files))&&errors.length){
     response.errors.avatar=errors;
   }
+
  return response
 }
 

@@ -1,5 +1,5 @@
 //https://stackoverflow.com/questions/16015548/tool-for-sending-multipart-form-data-request
-
+var phone =require ('phone');
 var validate={};
 
 var validateEmailFormat= function(email) {
@@ -7,10 +7,10 @@ var validateEmailFormat= function(email) {
     return re.test(email)
 };
 
-var validatePhone_countrycode = function(phoneNum,countryCode) { //validate Phone according to country-Code
+var validatePhone_countrycode = function(phoneNum,countryCode) {
+  //validate Phone according to country-Code
   //phone('6123-6123', 'HKG'); return ['+85261236123', 'HKG'] //phone('6123-6123', 'HKG');  return [], as default
     var res=phone(phoneNum,countryCode)
-      console.log(phoneNum,countryCode,phone(phoneNum,countryCode)+"ppppppp"+res)
     if(res[1])
      return true;
     else
@@ -86,7 +86,6 @@ validate.validatePhone=function(phoneNum,countryCode){
 
 validate.validateAvatar=function(files){
   errors=[]
-  console.log(files.picture)
   if(files.picture){
     let type=files.picture.mimetype;
    if(type.indexOf('jpg')==-1 &&type.indexOf('png')==-1&&type.indexOf('jpeg')==-1)
