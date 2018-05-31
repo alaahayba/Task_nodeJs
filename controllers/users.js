@@ -29,14 +29,11 @@ router.post("/register",function(request,response)
       email:request.body.email,
       password:bcrypt.hashSync(request.body.password, 10)//10 saltRounds
 
-    },function(err,doc){ //call back function that will executed after saving
-
-    if(!err)
-    {
-      let dirPath=__dirname.replace('/controller/', '/public/images/');
-      console.log(dirPathpath)
+    },function(err,doc){
+    //................call back function that will executed after saving
+    if(!err) {
+      let dirPath=__dirname.replace('/controllers', '/public/images/');
       request.files.picture.mv(dirPath+request.files.picture.md5, function(err) {
-        console.log("ddddddddddddddddddddd",err)
          if (err)
            response.status(500).send(err);
         else{
@@ -47,10 +44,10 @@ router.post("/register",function(request,response)
               accountData: doc
             }
             response.json(msg);
-        }
+          }
       });
-
     }
+
     else
         response.json("An error occure while saving new account in database error is "+ err);
     });

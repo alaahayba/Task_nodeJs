@@ -4,9 +4,6 @@ var fs = require("fs");
 var path = require('path');
 var mongoose = require("mongoose")
 
-// var requestChecker  =  require('./middleWare/AuthMiddleWare.js')
-
-
 server.use(function(req,resp,next){
   resp.header("Access-Control-Allow-Origin","*");
   resp.header("Access-Control-Allow-Headers","Content-Type");

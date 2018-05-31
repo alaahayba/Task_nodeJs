@@ -80,6 +80,7 @@ UsersModel.isValidData=(data,files)=>{
 }
 
 //****************************************************************************//
+
 UsersModel.register = (newUserAccount, callbackFn)=>{
     let user = new UsersModel.model(newUserAccount);
     user.save((err, doc)=>{
