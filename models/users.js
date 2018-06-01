@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var lookup = require('country-code-lookup');
 var validate=require("../middleware/validateInput.js")
+const bcrypt = require('bcrypt');
 // var DateOnly = require('mongoose-dateonly')(mongoose);
 
 // ORM Mapping ...
@@ -66,7 +67,7 @@ UsersModel.isValidData=(data,files)=>{
   else if(!data.countryCode){
       response.errors.countryCode=[ { "error": "blank" } ];
   }
-  if((errors=validate.validatePhone(data.Phone_number,data.countryCode))&&errors.length){
+  if((errors=validate.validatePhone(data.phone_number,data.countryCode))&&errors.length){
       response.errors.phone_number=errors;
   }
   if((errors=validate.validateDate(data.birthDate))&&errors.length){
@@ -91,6 +92,20 @@ UsersModel.register = (newUserAccount, callbackFn)=>{
 UsersModel.getUserbyEmail = (email, callbackFn)=>{
     UsersModel.model.find({email:email},(err,doc)=>{
         callbackFn(err, doc);
+      });
+}
+
+UsersModel.getUserbyPhone = (phoneNum,password,callbackFn)=>{
+    UsersModel.model.findOne({Phone_number:phoneNum},(err,doc)=>{
+      if(doc){
+        if(bcrypt.compareSync(password, doc.password)) // true
+             callbackFn(err, doc);
+       else
+         callbackFn({"unauthorized":"password is wrong"}, "NuLL");
+      }
+      else
+          callbackFn({"unauthorized":"phone is wrong"}, "NuLL");
+        
       });
 }
 

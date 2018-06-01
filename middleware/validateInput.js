@@ -8,8 +8,6 @@ var validateEmailFormat= function(email) {
 };
 
 var validatePhone_countrycode = function(phoneNum,countryCode) {
-  //validate Phone according to country-Code
-  //phone('6123-6123', 'HKG'); return ['+85261236123', 'HKG'] //phone('6123-6123', 'HKG');  return [], as default
     var res=phone(phoneNum,countryCode)
     if(res[1])
      return true;
