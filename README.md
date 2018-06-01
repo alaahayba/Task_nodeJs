@@ -18,11 +18,11 @@ After cloning, inside the project directory run the following:
 ```
 
 
-##refrences
-
+## refrences
+```
 https://www.npmjs.com/package/phone
 https://www.npmjs.com/package/bcrypt
 https://www.npmjs.com/package/express-fileupload
 https://medium.freecodecamp.org/securing-node-js-restful-apis-with-json-web-tokens-9f811a92bb52
-=======
+```
 #Task_nodeJs
